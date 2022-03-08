@@ -1,0 +1,138 @@
+@mixin cream-menu-theme() {
+  cream-menu {
+    background-color: cream-theme(menu-background-color);
+
+    ul.menu-items {
+      margin: 0;
+      padding: 0;
+    }
+
+    .menu-group,
+    .menu-item a {
+      font-family: cream-theme(menu-text-font-family);
+      font-size: cream-theme(menu-text-font-size);
+      font-weight: cream-theme(menu-text-font-weight);
+      line-height: cream-theme(menu-text-line-height);
+      padding: cream-theme(menu-item-padding);
+    }
+
+    .menu-group,
+    .menu-group cream-icon.menu-icon {
+      color: cream-theme(menu-group-text-color);
+    }
+
+    .menu-item {
+      a {
+        color: cream-theme(menu-text-color);
+        border-radius: cream-theme(menu-item-border-radius);
+      }
+
+      a.active {
+        background-color: cream-theme(menu-item-active-background-color);
+        color: cream-theme(menu-item-active-text-color);
+
+        .menu-icon {
+          color: cream-theme(menu-item-icon-active-color);
+        }
+      }
+
+      a:hover {
+        background-color: cream-theme(menu-item-hover-background-color);
+        color: cream-theme(menu-item-hover-text-color);
+        cursor: cream-theme(menu-item-hover-cursor);
+
+        .menu-icon {
+          color: cream-theme(menu-item-icon-hover-color);
+        }
+      }
+
+      .menu-icon {
+        color: cream-theme(menu-item-icon-color);
+        font-size: cream-theme(menu-item-icon-width);
+        margin: cream-theme(menu-item-icon-margin);
+        width: 1em;
+        text-align: center;
+      }
+
+      .expand-state {
+        color: cream-theme(menu-item-icon-color);
+      }
+    }
+
+    $divider: cream-theme(menu-item-divider-width)
+      cream-theme(menu-item-divider-style) cream-theme(menu-item-divider-color);
+    .menu-item {
+      border-bottom: $divider;
+
+      &:first-child {
+        border-top: none;
+      }
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .menu-item:first-child {
+        border-top: $divider;
+      }
+    }
+
+    .menu-item > .menu-items {
+      background-color: cream-theme(menu-submenu-background-color);
+      margin: cream-theme(menu-submenu-margin);
+      padding: cream-theme(menu-submenu-padding);
+    }
+
+    .menu-item > .menu-items > .menu-item {
+      background: cream-theme(menu-submenu-background-color);
+      color: cream-theme(menu-submenu-text-color);
+
+      a {
+        border-color: cream-theme(menu-submenu-item-border-color);
+        border-style: cream-theme(menu-submenu-item-border-style);
+        border-width: cream-theme(menu-submenu-item-border-width);
+        padding: cream-theme(menu-submenu-item-padding);
+      }
+
+      a.active {
+        background-color: cream-theme(
+          menu-submenu-item-active-background-color
+        );
+        border-color: cream-theme(menu-submenu-item-active-border-color);
+        color: cream-theme(menu-submenu-item-active-text-color);
+
+        .menu-icon {
+          color: cream-theme(menu-submenu-item-icon-active-color);
+        }
+      }
+
+      a:hover {
+        background-color: cream-theme(menu-submenu-item-hover-background-color);
+        border-color: cream-theme(menu-submenu-item-hover-border-color);
+        color: cream-theme(menu-submenu-item-hover-text-color);
+
+        .menu-icon {
+          color: cream-theme(menu-submenu-item-icon-hover-color);
+        }
+      }
+
+      a.active:hover {
+        background-color: cream-theme(
+          menu-submenu-item-active-hover-background-color
+        );
+        border-color: cream-theme(menu-submenu-item-active-hover-border-color);
+        color: cream-theme(menu-submenu-item-active-hover-text-color);
+
+        .menu-icon {
+          color: cream-theme(menu-submenu-item-icon-active-hover-color);
+        }
+      }
+    }
+
+    .menu-item > .menu-items > .menu-group {
+      &,
+      & cream-icon.menu-icon {
+        color: cream-theme(menu-group-text-color);
+      }
+    }
+  }
+}

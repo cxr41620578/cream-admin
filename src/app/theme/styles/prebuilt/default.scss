@@ -1,0 +1,7 @@
+@import '../all';
+
+$cream-enabled-themes: (default);
+
+@include cream-install() {
+  @include cream-theme-global();
+};

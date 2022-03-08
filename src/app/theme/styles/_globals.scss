@@ -1,0 +1,5 @@
+@import './global/component';
+
+@mixin cream-theme-global() {
+    @include cream-theme-components();
+}

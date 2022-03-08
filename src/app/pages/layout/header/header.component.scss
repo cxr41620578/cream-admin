@@ -1,0 +1,19 @@
+@import '~@angular/material/theming';
+
+.layout-toolbar {
+  border-bottom: 1px solid rgba(0, 0, 0, .12);
+
+  .layout-navbar-side.layout-header-fixed & {
+    border-bottom: unset;
+
+    @include mat-elevation(2);
+  }
+
+  .badge {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    font-size: 12px;
+    border-radius: 10px;
+  }
+}

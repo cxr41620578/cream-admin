@@ -1,0 +1,150 @@
+/**
+ * @license
+ * Copyright Akveo. All Rights Reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+ */
+
+@mixin cream-for-theme($name) {
+  @if ($cream-theme-name == $name) {
+    @content;
+  }
+}
+
+@mixin cream-for-themes($names...) {
+  @each $name in $names {
+    @include cream-for-theme($name) {
+      @content;
+    }
+  }
+}
+
+@mixin cream-except-theme($name) {
+  @if ($cream-theme-name != $name) {
+    @content;
+  }
+}
+
+@mixin cream-except-for-themes($names...) {
+  @each $name in $names {
+    @include cream-except-theme($name) {
+      @content;
+    }
+  }
+}
+
+@mixin cream-install-css-properties($theme-name, $theme) {
+  .cream-theme-#{$theme-name} {
+    @each $var, $value in $theme {
+      @if (type-of($value) == "string" and map-get($theme, $value)) {
+        --#{$var}: var(--#{$value});
+      } @else {
+        --#{$var}: #{$value};
+      }
+    }
+  }
+}
+
+@mixin cream-pre-process-context($theme-name) {
+  $cream-theme-process-mode: "pre-process" !global;
+
+  $cream-theme-name: $theme-name !global;
+  $cream-processed-theme: cream-process-theme(
+    cream-get-registered-theme($theme-name)
+  ) !global;
+}
+
+@mixin cream-lazy-process-context($theme-name) {
+  $cream-theme-process-mode: "lazy-process" !global;
+
+  $cream-theme-name: $theme-name !global;
+  $cream-processed-theme: () !global;
+}
+
+@mixin cream-install-component-with-css-props() {
+  // @breaking-change 5.0.0
+  :host {
+    @content;
+  }
+}
+
+@mixin cream-install-component-with-scss-vars() {
+  $enabled-themes: cream-get-enabled-themes();
+
+  @each $theme-name in $enabled-themes {
+    @include cream-lazy-process-context($theme-name);
+
+    /*
+        :host can be prefixed
+        https://github.com/angular/angular/blob/8d0ee34939f14c07876d222c25b405ed458a34d3/packages/compiler/src/shadow_css.ts#L441
+  
+        We have to use :host instead of :host-context($theme), to be able to prefix theme class
+        with something defined inside of @content, by prefixing &.
+        For example this scss code:
+          .cream-theme-default {
+            .some-selector & {
+              ...
+            }
+          }
+        Will result in next css:
+          .some-selector .cream-theme-default {
+            ...
+          }
+  
+        It doesn't work with :host-context because angular splitting it in two selectors and removes
+        prefix in one of the selectors.
+      */
+    .cream-theme-#{$theme-name} :host {
+      @content;
+    }
+  }
+}
+
+// Entry point
+// Installs component styles based on registered themes
+// TODO: we hide :host inside of it which is not obvious
+@mixin cream-install-component() {
+  @if ($cream-enable-css-custom-properties) {
+    @include cream-install-component-with-css-props() {
+      @content;
+    }
+  } @else {
+    @include cream-install-component-with-scss-vars() {
+      @content;
+    }
+  }
+}
+
+@mixin cream-install-global-with-css-props() {
+  @content;
+
+  @each $theme-name in cream-get-enabled-themes() {
+    @include cream-install-css-properties(
+      $theme-name,
+      cream-get-registered-theme($theme-name)
+    );
+  }
+}
+
+@mixin cream-install-global-with-scss-vars() {
+  @each $theme-name in cream-get-enabled-themes() {
+    @include cream-pre-process-context($theme-name);
+
+    .cream-theme-#{$theme-name} {
+      @content;
+    }
+  }
+}
+
+// Entry point
+// Installs global styles based on registered themes
+@mixin cream-install() {
+  @if ($cream-enable-css-custom-properties) {
+    @include cream-install-global-with-css-props() {
+      @content;
+    }
+  } @else {
+    @include cream-install-global-with-scss-vars() {
+      @content;
+    }
+  }
+}

@@ -1,0 +1,70 @@
+@import '../../themes/mapping';
+
+/**
+ * @license
+ * Copyright Akveo. All Rights Reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+ */
+
+@function cream-get-enabled-themes() {
+
+  @if (length($cream-enabled-themes) == 0) {
+    @each $theme-name, $theme in $cream-themes {
+      $cream-enabled-themes: append($cream-enabled-themes, $theme-name) !global;
+    }
+  }
+  @return $cream-enabled-themes;
+}
+
+@function get-last-enabled-theme() {
+  $themes: cream-get-enabled-themes();
+  @return nth($themes, length($themes));
+}
+
+@function cream-set-for-export($theme, $name, $parent-name: null) {
+
+  $parent-theme: map-get($cream-themes-export, $parent-name);
+  @if ($parent-theme != null) {
+    $theme: map-merge(map-get($parent-theme, data), $theme);
+  }
+
+  $theme-data: (
+    data: $theme,
+    parent: $parent-name,
+  );
+  @return map-set($cream-themes-export, $name, $theme-data);
+}
+
+@function cream-get-registered-theme($name) {
+  $theme: map-get($cream-themes, $name);
+
+  // TODO: check if optimal place
+  @if ($theme == null) {
+    @error 'Nebular Theme: theme `' + $name + '` is not registered with `cream-register-theme` function.';
+  }
+
+  @return $theme;
+}
+
+// Entry point
+// Registers a new theme
+@function cream-register-theme($theme, $name, $parent-name: null) {
+
+  @if ($cream-theme-export-mode == true) {
+    $cream-themes-export: cream-set-for-export($theme, $name, $parent-name) !global;
+  }
+
+  $theme-data: ();
+
+  @if ($parent-name != null) {
+    $parent-theme: map-get($cream-themes, $parent-name);
+    @if ($parent-theme == null) {
+      @error 'Nebular Theme: parent theme `' + $parent-name + '` is not registered or imported.';
+    }
+    $theme: map-merge($parent-theme, $theme);
+  }
+  $theme: map-merge($eva-mapping, $theme);
+  $cream-themes: map-set($cream-themes, $name, $theme) !global;
+
+  @return $cream-themes;
+}

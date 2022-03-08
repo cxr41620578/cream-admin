@@ -1,0 +1,59 @@
+@function cream-deep-find-value($theme, $key, $value) {
+  $parent-value: map-get($theme, $value);
+
+  @if ($parent-value != null) {
+    @return cream-deep-find-value($theme, $value, $parent-value);
+  }
+
+  @return $value;
+}
+
+@function cream-process-theme($theme) {
+  $processed-theme: ();
+  @each $key, $value in $theme {
+    $processed-theme: map-set(
+      $processed-theme,
+      $key,
+      cream-deep-find-value($theme, $key, $value)
+    );
+  }
+  @return $processed-theme;
+}
+
+@function get-current-theme-name() {
+  @if ($cream-theme-name != null) {
+    @return $cream-theme-name;
+  }
+
+  @return get-last-enabled-theme();
+}
+
+@function cream-theme($key) {
+  $value: ();
+
+  // in case of css custom properties - just returns var(--var-name) - the rest is a browser job
+  @if ($cream-enable-css-custom-properties == true) {
+    // there is no way to check if variable exists as current execution context is outside of particular theme
+    // because we process css in this mode only once! (and not for each theme)
+    $value: var(--#{$key});
+  } @else {
+    // in a preprocess mode (cream-install-global call) get ready value from $cream-processed-theme variable
+    @if ($cream-theme-process-mode == "pre-process") {
+      $value: map-get($cream-processed-theme, $key);
+    }
+
+    // otherwise lazily search for variable value
+    @if ($cream-theme-process-mode == "lazy-process") {
+      $cream-theme-name: get-current-theme-name();
+
+      $theme: cream-get-registered-theme($cream-theme-name);
+      $value: cream-deep-find-value($theme, $key, map-get($theme, $key));
+    }
+  }
+
+  @if ($value == null) {
+    @warn 'Cream Theme: `cream-theme()` cannot find value for key `' + $key + '` for theme `'+ $cream-theme-name +'`';
+  }
+
+  @return $value;
+}

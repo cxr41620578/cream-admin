@@ -1,0 +1,32 @@
+<a
+  class="layout-sidemenu-toggle"
+  href="javascript:void(0);"
+  (click)="onToggleSubMenu($event, menuItem)"
+  mat-ripple
+  [matRippleDisabled]="true"
+>
+  <mat-icon class="menu-icon">{{ menuItem.icon }}</mat-icon>
+  <span class="menu-name">{{ menuItem.name }}</span>
+  <span class="menu-label bg-{{ menuItem.label.color }}" *ngIf="menuItem.label">
+    {{ menuItem.label.value }}
+  </span>
+  <span fxFlex></span>
+  <span class="menu-badge bg-{{ menuItem.badge.color }}" *ngIf="menuItem.badge">
+    {{ menuItem.badge.value }}
+  </span>
+  <mat-icon class="menu-caret" [@toggleIcon]="toggleState">arrow_right</mat-icon>
+</a>
+<ul
+  *ngIf="menuItem.children"
+  [@toggle]="toggleState"
+  class="menu-items {{toggleState}}"
+>
+  <ng-container *ngFor="let item of menuItem.children">
+    <li
+      sidebarMenuItem
+      [menuItem]="item"
+      (toggleSubMenu)="onToggleSubMenu($event)"
+      class="menu-item"
+    ></li>
+  </ng-container>
+</ul>

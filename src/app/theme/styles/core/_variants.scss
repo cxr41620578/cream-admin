@@ -1,0 +1,11 @@
+@function cream-get-statuses() {
+  @return "basic", "primary", "success", "warning", "danger", "info", "control";
+}
+
+@function cream-get-sizes() {
+  @return "tiny", "small", "medium", "large", "giant";
+}
+
+@function cream-get-shapes() {
+  @return "rectangle", "semi-round", "round";
+}

@@ -1,0 +1,17 @@
+
+
+.layout-container {
+  height: 100%;
+}
+
+.layout-sidenav {
+  position: absolute;
+  overflow-x: hidden;
+  transition: swift-ease-out(width); // Only set width property
+
+  //@include mat-elevation(2);
+
+  &.mat-drawer-side {
+    border-width: 0;
+  }
+}
